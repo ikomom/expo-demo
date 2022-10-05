@@ -26,7 +26,7 @@ const TodoListFilter = {
   All: "全部",
   COMPlETE: "已完成",
   UNCOMPLETE: "未完成",
-};
+} as const;
 
 function getId() {
   return new Date().getTime();
@@ -35,6 +35,25 @@ function getId() {
 const todoListState = atom<TodoListItem[]>({
   key: "todoListState",
   default: [],
+});
+// 统计对象
+const todoListStatsState = selector({
+  key: "todoListStatsState",
+  get({ get }) {
+    const todoList = get(todoListState);
+    const totalNum = todoList.length;
+    const totalCompletedNum = todoList.filter((item) => item.isComplete).length;
+    const totalUncompletedNum = totalNum - totalCompletedNum;
+    const percentCompleted =
+      totalNum === 0 ? 0 : (totalCompletedNum / totalNum) * 100;
+
+    return {
+      totalNum,
+      totalCompletedNum,
+      totalUncompletedNum,
+      percentCompleted: percentCompleted.toFixed(2),
+    };
+  },
 });
 
 const todoListFilterState = atom<
@@ -181,6 +200,18 @@ function TodoListFilterView() {
   );
 }
 
+function TodoListStats() {
+  const stats = useRecoilValue(todoListStatsState);
+  return (
+    <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+      <Text>总计: {stats.totalNum}</Text>
+      <Text>已完成: {stats.totalCompletedNum}</Text>
+      <Text>未完成: {stats.totalUncompletedNum}</Text>
+      <Text>{stats.percentCompleted}%</Text>
+    </View>
+  );
+}
+
 function TodoListRender() {
   const todoList = useRecoilValue(filteredTodoListState);
 
@@ -205,10 +236,8 @@ export function RecoilTodoList() {
           <Text style={{ fontSize: 20 }}>Todo List</Text>
           <TodoListFilterView />
         </View>
-
-        {/* <TodoListStats /> */}
-        {/* <TodoListFilters /> */}
         <TodoItemCreator />
+        <TodoListStats />
         <View style={{ borderTopWidth: 0.5, height: 0, marginVertical: 10 }} />
         <TodoListRender />
       </View>
