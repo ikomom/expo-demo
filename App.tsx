@@ -1,9 +1,10 @@
 import { StatusBar } from "expo-status-bar";
 import { SafeAreaView, StyleSheet } from "react-native";
-import { RecoilTodoList } from "@/RecoilTest";
+import { RecoilTodoList } from "@Views/RecoilTest";
 import { RecoilRoot } from "recoil";
 
 import { LogBox } from "react-native";
+import { Provider } from "@ant-design/react-native";
 
 // @ts-ignore
 if (process.env.NODE_ENV === "development") {
@@ -18,16 +19,18 @@ const App = () => {
   return (
     <SafeAreaView style={styles.container}>
       <RecoilTodoList />
-      <StatusBar style="auto" translucent={false} />
+      <StatusBar style="auto" backgroundColor={"#fff"} translucent={false} />
     </SafeAreaView>
   );
 };
 
 export default () => {
   return (
-    <RecoilRoot>
-      <App />
-    </RecoilRoot>
+    <Provider>
+      <RecoilRoot>
+        <App />
+      </RecoilRoot>
+    </Provider>
   );
 };
 

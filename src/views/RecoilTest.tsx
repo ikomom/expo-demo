@@ -14,6 +14,7 @@ import {
   Text,
   Switch,
 } from "react-native";
+import { Popover } from "@ant-design/react-native";
 
 interface TodoListItem {
   id: number;
@@ -21,11 +22,11 @@ interface TodoListItem {
   isComplete: boolean;
 }
 
-enum TodoListFilter {
-  All,
-  COMPlELTE,
-  UNCOMPLETE,
-}
+const TodoListFilter = {
+  All: "全部",
+  COMPlETE: "已完成",
+  UNCOMPLETE: "未完成",
+};
 
 function getId() {
   return new Date().getTime();
@@ -36,7 +37,9 @@ const todoListState = atom<TodoListItem[]>({
   default: [],
 });
 
-const todoListFilterState = atom<TodoListFilter>({
+const todoListFilterState = atom<
+  typeof TodoListFilter[keyof typeof TodoListFilter]
+>({
   key: "todoListFilterState",
   default: TodoListFilter.All,
 });
@@ -50,7 +53,7 @@ const filteredTodoListState = selector({
     switch (filter) {
       case TodoListFilter.All:
         return list;
-      case TodoListFilter.COMPlELTE:
+      case TodoListFilter.COMPlETE:
         return list.filter((i) => i.isComplete);
       case TodoListFilter.UNCOMPLETE:
         return list.filter((i) => !i.isComplete);
@@ -145,22 +148,71 @@ function replaceItemAtIndex(arr, index, newValue) {
 function removeItemAtIndex(arr, index) {
   return [...arr.slice(0, index), ...arr.slice(index + 1)];
 }
-export function RecoilTodoList() {
+
+function TodoListFilterView() {
+  const [filter, setFilter] = useRecoilState(todoListFilterState);
+  return (
+    <Popover
+      triggerStyle={{
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+      placement={"auto"}
+      duration={200}
+      onSelect={(node) => {
+        setFilter(node);
+      }}
+      overlay={Object.values(TodoListFilter).map((item) => (
+        <Popover.Item key={item} value={item}>
+          <Text>{item}</Text>
+        </Popover.Item>
+      ))}
+    >
+      <Text
+        style={{
+          // width: 100,
+          padding: 10,
+          textAlign: "center",
+        }}
+      >
+        {filter}
+      </Text>
+    </Popover>
+  );
+}
+
+function TodoListRender() {
   const todoList = useRecoilValue(filteredTodoListState);
 
   return (
-    <View style={styles.container}>
-      <View style={{ borderBottomWidth: 1, marginBottom: 10 }}>
-        <Text style={{ fontSize: 20 }}>Todo List</Text>
+    <>
+      {todoList.length ? (
+        todoList.map((todoItem) => (
+          <TodoItem key={todoItem.id} item={todoItem} />
+        ))
+      ) : (
+        <Text style={{ textAlign: "center" }}>待办都清空啦</Text>
+      )}
+    </>
+  );
+}
+
+export function RecoilTodoList() {
+  return (
+    <>
+      <View style={styles.container}>
+        <View style={styles.header}>
+          <Text style={{ fontSize: 20 }}>Todo List</Text>
+          <TodoListFilterView />
+        </View>
+
+        {/* <TodoListStats /> */}
+        {/* <TodoListFilters /> */}
+        <TodoItemCreator />
+        <View style={{ borderTopWidth: 0.5, height: 0, marginVertical: 10 }} />
+        <TodoListRender />
       </View>
-      {/* <TodoListStats /> */}
-      {/* <TodoListFilters /> */}
-      <TodoItemCreator />
-      <View style={{ borderTopWidth: 0.5, height: 0, marginVertical: 10 }} />
-      {todoList.map((todoItem) => (
-        <TodoItem key={todoItem.id} item={todoItem} />
-      ))}
-    </View>
+    </>
   );
 }
 const styles = StyleSheet.create({
@@ -168,6 +220,13 @@ const styles = StyleSheet.create({
     width: "100%",
     padding: 10,
     // borderWidth: 1,
+  },
+  header: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    borderBottomWidth: 1,
+    marginBottom: 10,
   },
   inputItem: {
     flexDirection: "row",

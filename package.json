@@ -12,8 +12,10 @@
     "lint": "eslint . --fix"
   },
   "dependencies": {
+    "@ant-design/react-native": "^5.0.1",
     "@types/react": "~18.0.0",
     "@types/react-native": "~0.69.1",
+    "babel-plugin-import": "^1.13.5",
     "expo": "~46.0.13",
     "expo-status-bar": "~1.4.0",
     "jotai": "^1.8.4",
