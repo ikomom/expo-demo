@@ -10,6 +10,12 @@
       "warn", {
         "additionalHooks": "useRecoilCallback"
       }
+    ],
+    "prettier/prettier": [
+      "error",
+      {
+        "endOfLine": "auto"
+      }
     ]
   },
   "globals": {
