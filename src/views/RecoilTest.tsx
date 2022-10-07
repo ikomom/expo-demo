@@ -204,10 +204,10 @@ function TodoListStats() {
   const stats = useRecoilValue(todoListStatsState);
   return (
     <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-      <Text>总计: {stats.totalNum}</Text>
-      <Text>已完成: {stats.totalCompletedNum}</Text>
-      <Text>未完成: {stats.totalUncompletedNum}</Text>
-      <Text>{stats.percentCompleted}%</Text>
+      <Text style={{ flex: 1 }}>总计: {stats.totalNum}</Text>
+      <Text style={{ flex: 1 }}>已完成: {stats.totalCompletedNum}</Text>
+      <Text style={{ flex: 1 }}>未完成: {stats.totalUncompletedNum}</Text>
+      <Text style={{ flex: 1 }}>{stats.percentCompleted}%</Text>
     </View>
   );
 }
