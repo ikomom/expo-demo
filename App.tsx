@@ -1,7 +1,6 @@
 import { StatusBar } from "expo-status-bar";
 import { SafeAreaView, StyleSheet } from "react-native";
 import { RecoilTodoList } from "@Views/RecoilTest";
-import { RecoilRoot } from "recoil";
 
 import { LogBox } from "react-native";
 import { Provider } from "@ant-design/react-native";
@@ -27,9 +26,7 @@ const App = () => {
 export default () => {
   return (
     <Provider>
-      <RecoilRoot>
-        <App />
-      </RecoilRoot>
+      <App />
     </Provider>
   );
 };

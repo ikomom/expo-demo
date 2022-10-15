@@ -1,6 +1,7 @@
 import {
   atom,
   selector,
+  RecoilRoot,
   useRecoilState,
   useRecoilValue,
   useSetRecoilState,
@@ -230,7 +231,7 @@ function TodoListRender() {
 
 export function RecoilTodoList() {
   return (
-    <>
+    <RecoilRoot>
       <View style={styles.container}>
         <View style={styles.header}>
           <Text style={{ fontSize: 20 }}>Todo List</Text>
@@ -241,7 +242,7 @@ export function RecoilTodoList() {
         <View style={{ borderTopWidth: 0.5, height: 0, marginVertical: 10 }} />
         <TodoListRender />
       </View>
-    </>
+    </RecoilRoot>
   );
 }
 const styles = StyleSheet.create({
